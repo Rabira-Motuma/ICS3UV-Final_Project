@@ -14,12 +14,11 @@ const LETTERS: string[] = ["A", "B", "C", "D"];
 // array
 const sequence: string[] = new Array(SEQ_LENGTH);
 const guess: string[] = new Array(SEQ_LENGTH);
-const previousGuesses: string[][] = [];
 
 //variables
 let numberOfTries: number = 0;
-let correctPositions: number = 0; // green
-let correctLetters: number = 0; // orange
+let rightSpots: number = 0; // green
+let rightLetters: number = 0; // orange
 
 // create sequence
 for (let counter = 0; counter < SEQ_LENGTH; counter++) {
@@ -36,71 +35,68 @@ console.log(`You have ${MAX_GUESS} guesses. Good Luck!`);
 // loop
 do {
   // prompt guess
-  const guessString: string = prompt(`Enter guess #${numberOfTries + 1}:`) 
-  || "0";
+  const guessString: string = prompt(`Enter guess #${numberOfTries + 1}:`)
+    || "0";
 
   // split guess to array
   for (let counter = 0; counter < SEQ_LENGTH; counter++) {
     guess[counter] = guessString[counter]?.toUpperCase() || "0";
   }
 
-  // stores former guess
-  previousGuesses.push([...guess]);
-
   // reset counters
-  correctPositions = 0;
-  correctLetters = 0;
+  rightSpots = 0;
+  rightLetters = 0;
 
   // temporary arrys to mark counter letters
   const tempSecret: string[] = [...sequence];
   const tempGuess: string[] = [...guess];
 
   // arrays for feedback displayment
-  const correctPositionsArray: string[] = new Array(SEQ_LENGTH).fill("");
-  const correctLettersArray: string[] = new Array(SEQ_LENGTH).fill("");
+  const rightSpotsArray: string[] = new Array(SEQ_LENGTH).fill("");
+  const rightLetterssArray: string[] = new Array(SEQ_LENGTH).fill("");
 
-  // 1: count letters in correct position (green)
+  // 1: count letters in right spots
   for (let counter = 0; counter < SEQ_LENGTH; counter++) {
-      if (tempGuess[counter] == tempSecret[counter]) {
-        correctPositions++;
-        correctPositionsArray[counter] = tempGuess[counter]; // mark green letter
-        tempGuess[counter] = "";
-        tempSecret[counter] = "";       // mark counter
+    if (tempGuess[counter] == tempSecret[counter]) {
+      rightSpots++;
+      rightSpotsArray[counter] = tempGuess[counter]; // mark green letter
+      tempGuess[counter] = "";
+      tempSecret[counter] = "";       // mark counter
     }
   }
 
-  // 2: count correct letters, but not in correct position (orange)
+  // 2: count correct letters, but not in correct spot
   for (let counter = 0; counter < SEQ_LENGTH; counter++) {
-      if (tempGuess[counter] !== "") {
-        const index = tempSecret.indexOf(tempGuess[counter]);
-        if (index !== -1) {
-          correctLetters++;
-          correctLettersArray[counter] = guess[counter];
-          tempSecret[index] = "";
-          tempGuess[counter] = "";
-        }
+    if (tempGuess[counter] !== "") {
+      const index = tempSecret.indexOf(tempGuess[counter]);
+      if (index !== -1) {
+        rightLetters++;
+        rightLetterssArray[counter] = guess[counter];
+        tempSecret[index] = "";
+        tempGuess[counter] = "";
       }
+    }
   }
 
   numberOfTries++;
 
   // decision
-  if (correctPositions == SEQ_LENGTH) {
+  if (rightSpots == SEQ_LENGTH) {
     console.log(`CONGRATULATIONS! You guessed the correct sequence: 
     ${sequence.join("")}`);
-      break;  
-  } else { 
+    break;
+  } else {
     console.log(`Letters in correct position (green): 
-    ${JSON.stringify(correctPositionsArray)}`);
+    ${JSON.stringify(rightSpotsArray)}`);
     console.log(`Correct letters in wrong position (orange): 
-    ${JSON.stringify(correctLettersArray)}`);
-        console.log(`You have ${MAX_GUESS - numberOfTries} guesses left.\n`);
+    ${JSON.stringify(rightLetterssArray)}`);
+    console.log(`You have ${MAX_GUESS - numberOfTries} guesses left.\n`);
   }
 
   if (numberOfTries >= MAX_GUESS) {
     console.log(`Sorry, you've run out of guesses, the sequence was 
     ${sequence.join("")}`);
-      break;
+    break;
   }
 } while (true);
 
